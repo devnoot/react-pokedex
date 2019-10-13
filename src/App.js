@@ -102,16 +102,16 @@ class App extends Component {
               {selected && !isLoading && (
                 <div style={{ padding: "1em" }}>
                   <h3>
-                    #{selected.id} {selected.name}
+                    #{selected.id}{" "}
+                    <span className="capitalize">{selected.name}</span>
                   </h3>
-                  <p>Height: {selected.height}</p>
-                  <p>Weight: {selected.weight}</p>
-                  <p>Normal form</p>
+                  <p>
+                    {+selected.height * 10} cm / {+selected.weight / 10} kg
+                  </p>
                   <img
                     src={selected.sprites.front_default}
                     alt={`${selected.name} normal form`}
                   />
-                  <p>Shiny form</p>
                   <img
                     src={selected.sprites.front_shiny}
                     alt={`${selected.name} shiny form`}
@@ -137,12 +137,16 @@ class App extends Component {
                 There should be a scroll up and scroll down action available, doing so should
                 grab the next "page" of Pokemon from the API
               */}
-              <button onClick={() => this.prev()}>prev</button>
-              <button onClick={() => this.next()}>next</button>
+              <div className="Selector-Actions">
+                <button onClick={() => this.prev()}>prev</button>
+                <button onClick={() => this.next()}>next</button>
+              </div>
             </div>
 
             <footer className="Footer">
-              <p className="text-center">Displaying {+offset} - {+offset + +limit}</p>
+              <p className="text-center">
+                Displaying {+offset} - {+offset + +limit}
+              </p>
               <p className="text-center">
                 Built by <a href="https://twitter.com/devnoot">devnoot</a> using{" "}
                 <a href="https://pokespi.co">PokeAPI</a>

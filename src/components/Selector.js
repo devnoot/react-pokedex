@@ -17,7 +17,7 @@ class Selector extends Component {
     return (
       <div style={{ padding: "0.5em 1em" }}>
         {data.map((pkmn, i) => <div className="Selector-Item" key={i}>
-          <a href="#" onClick={() => this.onSelect(pkmn)}><p>{pkmn.name}</p></a>
+          <a href="#" onClick={() => this.onSelect(pkmn)}><p className="capitalize">{pkmn.name}</p></a>
           </div>
         )} 
       </div> 
