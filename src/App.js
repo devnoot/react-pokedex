@@ -74,6 +74,7 @@ class App extends Component {
       error,
       isLoading,
       offset,
+      limit,
       nextURL,
       prevURL
     } = this.state;
@@ -97,15 +98,24 @@ class App extends Component {
 
             {/* When a pokemon is selected, display the details here */}
             <div className="Details">
-              {selected && (
-                <div style={{padding: "1em"}}>
-                  <h3>#{selected.id} {selected.name}</h3>
+              {isLoading && <div className="loader"></div>}
+              {selected && !isLoading && (
+                <div style={{ padding: "1em" }}>
+                  <h3>
+                    #{selected.id} {selected.name}
+                  </h3>
                   <p>Height: {selected.height}</p>
                   <p>Weight: {selected.weight}</p>
-                  <p>Normal form</p> 
-                  <img src={selected.sprites.front_default} alt={`${selected.name} normal form`} />
+                  <p>Normal form</p>
+                  <img
+                    src={selected.sprites.front_default}
+                    alt={`${selected.name} normal form`}
+                  />
                   <p>Shiny form</p>
-                  <img src={selected.sprites.front_shiny} alt={`${selected.name} shiny form`} />
+                  <img
+                    src={selected.sprites.front_shiny}
+                    alt={`${selected.name} shiny form`}
+                  />
                 </div>
               )}
             </div>
@@ -132,15 +142,14 @@ class App extends Component {
             </div>
 
             <footer className="Footer">
+              <p className="text-center">Displaying {+offset} - {+offset + +limit}</p>
               <p className="text-center">
                 Built by <a href="https://twitter.com/devnoot">devnoot</a> using{" "}
                 <a href="https://pokespi.co">PokeAPI</a>
               </p>
             </footer>
-
           </div>
         </main>
-
       </div>
     );
   }
