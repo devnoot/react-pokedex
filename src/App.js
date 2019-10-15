@@ -10,7 +10,6 @@ import TypePill from "./components/TypePill";
 import "./App.css";
 
 class App extends Component {
-
   state = {
     isLoading: false,
     error: "",
@@ -59,17 +58,21 @@ class App extends Component {
         this.getPokedexEntry(res.species.url);
         // Get the species and the pokedex entry
       })
-      .catch(error => this.setState({ error }))
+      .catch(error => this.setState({ error }));
   }
 
   getPokedexEntry(speciesURL, lang) {
-    this.setState({ isLoading: true }); 
+    this.setState({ isLoading: true });
     fetch(speciesURL)
       .then(res => res.json())
       .then(species => {
         const entries = species.flavor_text_entries;
-        const filtered = entries.filter(entry => entry.language.name === "en") 
-        this.setState({ description: filtered[0].flavor_text });
+        const filtered = entries.filter(entry => entry.language.name === "en");
+        const genera = species.genera.filter(entry => entry.language.name === "en");
+        this.setState({
+          description: filtered[0].flavor_text,
+          genus: genera[0].genus
+        });
       })
       .catch(error => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
@@ -115,7 +118,8 @@ class App extends Component {
       limit,
       prevURL,
       description,
-      tts
+      tts,
+      genus
     } = this.state;
 
     /* 
@@ -148,12 +152,18 @@ class App extends Component {
                       </span>
                     </h3>
                     {/* Display the type or types */}
-                    {selected.types.map((typedef, i) => (<TypePill key={i} type={typedef.type.name} />))}
+                    {selected.types.map((typedef, i) => (
+                      <TypePill key={i} type={typedef.type.name} />
+                    ))}
                     <p className="text-muted mt-3">
                       {+selected.height * 10} cm / {+selected.weight / 10} kg
                     </p>
 
-                    <p className="text-justify">{description}{!tts.speaking && this.speak(`${selected.name}, ${description}`)}</p>
+                    <p className="text-justify">
+                      {description}
+                      {!tts.speaking &&
+                        this.speak(`${selected.name}. The ${genus}. ${description}`)}
+                    </p>
 
                     <img
                       src={selected.sprites.front_default}
@@ -163,7 +173,6 @@ class App extends Component {
                       src={selected.sprites.front_shiny}
                       alt={`${selected.name} shiny form`}
                     />
-
                   </div>
                 )}
               </Col>
@@ -171,7 +180,7 @@ class App extends Component {
                 <p className="text-muted text-uppercase">
                   Displaying {+offset} - {+offset + +limit}
                 </p>
-                
+
                 {/*
                 For each pokemon that should be shown (there should be a max
                 limit) display them in a list 
