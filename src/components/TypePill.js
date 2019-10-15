@@ -2,63 +2,36 @@ import React from "react";
 import PropTypes from "prop-types";
 import Badge from "react-bootstrap/Badge";
 
-const TypePill = ({ type }) => {
-  let variant;
+const colors = {
+  normal: "#A8A77A",
+  fire: "#EE8130",
+  water: "#6390F0",
+  electric: "#F7D02C",
+  grass: "#7AC74C",
+  ice: "#96D9D6",
+  fighting: "#C22E28",
+  poison: "#A33EA1",
+  ground: "#E2BF65",
+  flying: "#A98FF3",
+  psychic: "#F95587",
+  bug: "#A6B91A",
+  rock: "#B6A136",
+  ghost: "#735797",
+  dragon: "#6F35FC",
+  dark: "#705746",
+  steel: "#B7B7CE",
+  fairy: "#D685AD",
+  unknown: "#68A090"
+};
 
-  switch(type) {
-    case "rock":
-    case "fairy":
-    case "normal":
-    case "flying":
-      variant = "light"; 
-      break;
-    
-    case "electric":
-    case "fighting":
-    case "ground":
-      variant="warning";
-      break;
-    
-    case "grass":
-    case "poison":
-    case "bug":
-      variant="success";
-      break;
-    
-    case "steel":
-      variant="secondary";
-      break;
-    
-    case "dragon":
-    case "fire":
-      variant="danger";
-      break;
-    
-    case "water":
-      variant="primary";
-      break;
-    
-    case "ice":
-      variant="info";
-      break;
-    
-    case "unknown":
-    case "ghost":
-    case "shadow":
-    case "psychic":
-    case "dark":
-      variant="dark";
-      break;
-    
-    default:
-      break; 
-  }
-
-  return <Badge variant={variant} className="mr-2">{type}</Badge>
-}
+const TypePill = ({ type }) => (
+  <Badge style={{ backgroundColor: colors[type] }} className="mr-2">
+    {type}
+  </Badge>
+);
 
 TypePill.propTypes = {
   type: PropTypes.string.isRequired
-}
+};
 
 export default TypePill;

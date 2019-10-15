@@ -55,7 +55,6 @@ class App extends Component {
         // Get the species and the pokedex entry
       })
       .catch(error => this.setState({ error }))
-      .finally(() => this.setState({ isLoading: false }));
   }
 
   getPokedexEntry(speciesURL, lang) {
@@ -86,6 +85,11 @@ class App extends Component {
   }
 
   prev() {
+    const url = new URL(this.state.prevURL);
+    const params = url.searchParams;
+    const limit = params.get("limit");
+    const offset = params.get("offset");
+    this.setState({ offset, limit });
     this.getPokemon(this.state.prevURL);
   }
 
@@ -119,7 +123,7 @@ class App extends Component {
 
           <Container>
             <Row>
-              <Col>
+              <Col md={6}>
                 {/* When a pokemon is selected, display the details here */}
                 {isLoading && <div className="loader"></div>}
                 {selected && !isLoading && (
@@ -132,11 +136,11 @@ class App extends Component {
                     </h3>
                     {/* Display the type or types */}
                     {selected.types.map((typedef, i) => (<TypePill key={i} type={typedef.type.name} />))}
-                    <p>
+                    <p className="text-muted mt-3">
                       {+selected.height * 10} cm / {+selected.weight / 10} kg
                     </p>
 
-                    {description && <p>{description}</p>}
+                    <p className="text-justify">{description}</p>
 
                     <img
                       src={selected.sprites.front_default}
@@ -149,7 +153,7 @@ class App extends Component {
                   </div>
                 )}
               </Col>
-              <Col>
+              <Col md={6}>
                 <p className="text-muted text-uppercase">
                   Displaying {+offset} - {+offset + +limit}
                 </p>

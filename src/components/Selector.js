@@ -19,8 +19,17 @@ class Selector extends Component {
     return (
       <ListGroup>
         {data.map((pkmn, i) => (
-          <ListGroup.Item key={i} onClick={() => this.onSelect(pkmn)} action className="text-capitalize" active={pkmn === selected}>
-          <Badge variant={pkmn === selected ? "light" : "secondary" }>{i + offset + 1}</Badge> {pkmn.name}
+          <ListGroup.Item
+            key={i}
+            onClick={() => this.onSelect(pkmn)}
+            action
+            className="text-capitalize"
+            active={pkmn === selected}
+          >
+            <Badge variant={pkmn === selected ? "light" : "secondary"}>
+              {i + offset + 1}
+            </Badge>{" "}
+            {pkmn.name}
           </ListGroup.Item>
         ))}
       </ListGroup>
