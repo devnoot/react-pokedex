@@ -28,6 +28,11 @@ class App extends Component {
     this.getPokemon(
       `https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}`
     );
+
+    // Set up tts
+    if ("speechSynthesis" in window) {
+      this.setState({ tts: window.speechSynthesis });
+    }
   }
 
   getPokemon(url) {
@@ -93,6 +98,13 @@ class App extends Component {
     this.getPokemon(this.state.prevURL);
   }
 
+  speak(text) {
+    const { tts } = this.state;
+    tts.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    tts.speak(utterance);
+  }
+
   render() {
     const {
       selected,
@@ -102,7 +114,8 @@ class App extends Component {
       offset,
       limit,
       prevURL,
-      description
+      description,
+      tts
     } = this.state;
 
     /* 
@@ -140,7 +153,7 @@ class App extends Component {
                       {+selected.height * 10} cm / {+selected.weight / 10} kg
                     </p>
 
-                    <p className="text-justify">{description}</p>
+                    <p className="text-justify">{description}{!tts.speaking && this.speak(`${selected.name}, ${description}`)}</p>
 
                     <img
                       src={selected.sprites.front_default}
@@ -150,6 +163,7 @@ class App extends Component {
                       src={selected.sprites.front_shiny}
                       alt={`${selected.name} shiny form`}
                     />
+
                   </div>
                 )}
               </Col>
