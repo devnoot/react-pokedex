@@ -5,10 +5,12 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
+import TypePill from "./components/TypePill";
 
 import "./App.css";
 
 class App extends Component {
+
   state = {
     isLoading: false,
     error: "",
@@ -49,6 +51,21 @@ class App extends Component {
       .then(res => res.json())
       .then(res => {
         this.setState({ selected: res });
+        this.getPokedexEntry(res.species.url);
+        // Get the species and the pokedex entry
+      })
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ isLoading: false }));
+  }
+
+  getPokedexEntry(speciesURL, lang) {
+    this.setState({ isLoading: true }); 
+    fetch(speciesURL)
+      .then(res => res.json())
+      .then(species => {
+        const entries = species.flavor_text_entries;
+        const filtered = entries.filter(entry => entry.language.name === "en") 
+        this.setState({ description: filtered[0].flavor_text });
       })
       .catch(error => this.setState({ error }))
       .finally(() => this.setState({ isLoading: false }));
@@ -80,7 +97,8 @@ class App extends Component {
       isLoading,
       offset,
       limit,
-      prevURL
+      prevURL,
+      description
     } = this.state;
 
     /* 
@@ -112,9 +130,14 @@ class App extends Component {
                         {selected.name}
                       </span>
                     </h3>
+                    {/* Display the type or types */}
+                    {selected.types.map((typedef, i) => (<TypePill key={i} type={typedef.type.name} />))}
                     <p>
                       {+selected.height * 10} cm / {+selected.weight / 10} kg
                     </p>
+
+                    {description && <p>{description}</p>}
+
                     <img
                       src={selected.sprites.front_default}
                       alt={`${selected.name} normal form`}
@@ -139,6 +162,7 @@ class App extends Component {
                   <Selector
                     data={selectionList}
                     onSelectPokemon={pokemon => this.onSelect(pokemon)}
+                    offset={+offset}
                   />
                 )}
 
