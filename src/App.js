@@ -18,7 +18,8 @@ class App extends Component {
     nextURL: "",
     prevURL: "",
     offset: 0,
-    limit: 10
+    limit: 10,
+    voice: false
   };
 
   componentDidMount() {
@@ -82,8 +83,15 @@ class App extends Component {
     this.getDetailedStats(pokemon.url);
   }
 
-  next() {
-    // Set the offset and limit based on the URL
+  onToggleVoice(voice) {
+    // If the voice is toggled off, stop the voice completely
+    if (!voice) {
+      this.state.tts.cancel();
+    }
+    this.setState({ voice }); 
+  }
+  
+  next() { // Set the offset and limit based on the URL const url = new URL(this.state.nextURL); const params = url.searchParams;
     const url = new URL(this.state.nextURL);
     const params = url.searchParams;
     const limit = params.get("limit");
@@ -102,10 +110,12 @@ class App extends Component {
   }
 
   speak(text) {
-    const { tts } = this.state;
+    const { tts, voice } = this.state;
     tts.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    tts.speak(utterance);
+    if (voice) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      tts.speak(utterance);
+    }
   }
 
   render() {
@@ -161,8 +171,7 @@ class App extends Component {
 
                     <p className="text-justify">
                       {description}
-                      {!tts.speaking &&
-                        this.speak(`${selected.name}. The ${genus}. ${description}`)}
+                      {this.speak(`${selected.name}. The ${genus}. ${description}`)}
                     </p>
 
                     <img
@@ -189,6 +198,7 @@ class App extends Component {
                   <Selector
                     data={selectionList}
                     onSelectPokemon={pokemon => this.onSelect(pokemon)}
+                    onToggleVoice={voice => this.onToggleVoice(voice)}
                     offset={+offset}
                   />
                 )}
@@ -204,10 +214,10 @@ class App extends Component {
                     variant="text"
                     disabled={!prevURL}
                   >
-                    Back
+                    Last page
                   </Button>
                   <Button onClick={() => this.next()} variant="text">
-                    Next
+                    Next page
                   </Button>
                 </div>
               </Col>
